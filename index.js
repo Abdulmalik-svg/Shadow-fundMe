@@ -48,18 +48,41 @@ async function withdraw() {
 async function fund() {
   const ethAmount = document.getElementById("ethAmount").value
   console.log(`Funding with ${ethAmount}...`)
+  
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.BrowserProvider(window.ethereum)
     await provider.send('eth_requestAccounts', [])
+    
+    // CHECK NETWORK FIRST
+    const network = await provider.getNetwork()
+    console.log("Connected to network chainId:", network.chainId.toString())
+    
+    if (network.chainId !== 11155111n) {
+      alert("Wrong Network! Please switch MetaMask to Sepolia Testnet")
+      console.log("Expected: 11155111, Got:", network.chainId.toString())
+      return
+    }
+    
     const signer = await provider.getSigner()
     const contract = new ethers.Contract(contractAddress, abi, signer)
+    
     try {
+      console.log("Sending transaction...")
       const transactionResponse = await contract.fund({
         value: ethers.parseEther(ethAmount),
       })
+      console.log("Transaction hash:", transactionResponse.hash)
+      console.log("Waiting for confirmation...")
       await transactionResponse.wait(1)
+      console.log("Done! Funded successfully!")
+      alert(`Successfully funded with ${ethAmount} ETH!`)
     } catch (error) {
-      console.log(error)
+      console.error("Error details:", error)
+      if (error.reason) {
+        alert(`Transaction failed: ${error.reason}`)
+      } else {
+        alert(`Error: ${error.message}`)
+      }
     }
   } else {
     fundButton.innerHTML = "Please install MetaMask"

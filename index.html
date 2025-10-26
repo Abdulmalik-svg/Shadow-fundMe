@@ -1,19 +1,318 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Fund Me App</title>
-  </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow FundMe - Decentralized Crowdfunding</title>
 
-  <body>
-    <button id="connectButton">Connect</button>
-    <button id="balanceButton">getBalance</button>
-    <button id="withdrawButton">Withdraw</button>
-    <!-- <form> -->
-    <label for="ethAmount">ETH Amount</label>
-    <input id="ethAmount" placeholder="0.1" />
-    <button type="button" id="fundButton" > Fund </button>
-    <!-- </form> -->
-  </body>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
-  <script src="./index.js" type="module"></script>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+      color: #1e293b;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* HERO SECTION */
+    header {
+      text-align: center;
+      padding: 100px 20px 60px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      box-shadow: 0 4px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    header h1 {
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      font-size: 18px;
+      color: #e0e7ff;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 10%;
+      gap: 40px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.1);
+      margin-top: -40px;
+    }
+
+    .about-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .about-text h2 {
+      color: #2563eb;
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+
+    .about-text p {
+      color: #334155;
+      font-size: 16px;
+    }
+
+    .about-guide {
+      flex: 1;
+      min-width: 300px;
+      background: #eff6ff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .about-guide h3 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    .about-guide ul {
+      list-style: none;
+      padding-left: 10px;
+    }
+
+    .about-guide li {
+      margin-bottom: 10px;
+      color: #1e293b;
+    }
+
+    .about-guide a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    /* APP CONTAINER */
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+      padding: 40px;
+      width: 90%;
+      max-width: 520px;
+      margin: 60px auto;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .logo {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #475569;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 10px;
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: 2px solid #6366f1;
+    }
+
+    button {
+      border: none;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #3b82f6);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4f46e5, #2563eb);
+      transform: scale(1.03);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      color: #475569;
+    }
+
+    .footer {
+      text-align: center;
+      margin: 60px 0 20px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .footer a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1> Shadow FundMe</h1>
+    <p>Empowering projects through transparent, decentralized crowdfunding.</p>
+  </header>
+
+  <section class="about">
+    <div class="about-text">
+      <h2>About the Project</h2>
+      <p>
+        Shadow FundMe is a decentralized crowdfunding platform built on the Ethereum Sepolia testnet.
+        It allows users to support ideas, creators, and innovations directly using smart contracts — 
+        no intermediaries, no limits. All transactions are transparent and verifiable on the blockchain.
+      </p>
+    </div>
+
+    <div class="about-guide">
+      <h3>How to Get Sepolia ETH for Testing</h3>
+      <ul>
+        <li>💼 Install <a href="https://metamask.io/download.html" target="_blank">MetaMask</a> browser extension.</li>
+        <li>🌐 Switch your network to <b>Sepolia Test Network</b>.</li>
+        <li>🪙 Visit <a href="https://sepoliafaucet.com" target="_blank">Sepolia Faucet</a> to request free ETH.</li>
+        <li>🚀 Wait a few minutes, then refresh your balance in MetaMask.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="logo">🌐</div>
+    <h1>Shadow FundMe DApp</h1>
+    <p class="subtitle">Interact with our smart contract below</p>
+
+    <div class="status-bar">
+      <div>Balance: <span id="contractBalance">0.00 ETH</span></div>
+      <div>Network: <span id="networkStatus">Not Connected</span></div>
+    </div>
+
+    <input type="number" id="ethAmount" placeholder="Enter ETH amount" step="0.001" min="0.001" />
+    <button class="btn-primary" id="connectButton">🦊 Connect Wallet</button>
+    <br /><br />
+    <button class="btn-secondary" id="fundButton" disabled> Fund</button>
+    <button class="btn-danger" id="withdrawButton" disabled> Withdraw (Owner)</button>
+
+    <p style="margin-top:20px;">Contract:
+      <a href="https://sepolia.etherscan.io/address/0x1Ef91465A3cEefdc83cbccAcE73e6254dC023a68" target="_blank" style="color:#2563eb;">View on Etherscan ↗</a>
+    </p>
+  </div>
+
+  <div class="footer">
+    Built with ❤️ by Shadow Devs | Powered by <a href="https://ethereum.org/en/developers/" target="_blank">Ethereum</a>
+  </div>
+
+  <script type="module">
+    import { ethers } from "./ethers-6.7.esm.min.js"
+    import { abi, contractAddress } from "./constants.js"
+
+    const connectButton = document.getElementById("connectButton")
+    const withdrawButton = document.getElementById("withdrawButton")
+    const fundButton = document.getElementById("fundButton")
+    const contractBalance = document.getElementById("contractBalance")
+    const networkStatus = document.getElementById("networkStatus")
+
+    connectButton.onclick = connect
+    fundButton.onclick = fund
+    withdrawButton.onclick = withdraw
+
+    async function connect() {
+      if (typeof window.ethereum !== "undefined") {
+        await ethereum.request({ method: "eth_requestAccounts" })
+        connectButton.textContent = "✅ Connected"
+        fundButton.disabled = false
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        const network = await provider.getNetwork()
+        networkStatus.textContent = network.name
+        getBalance()
+      } else {
+        alert("Please install MetaMask")
+      }
+    }
+
+    async function fund() {
+      const ethAmount = document.getElementById("ethAmount").value
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, abi, signer)
+      const tx = await contract.fund({ value: ethers.parseEther(ethAmount) })
+      await tx.wait(1)
+      alert(`Funded ${ethAmount} ETH successfully!`)
+      getBalance()
+    }
+
+    async function withdraw() {
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, abi, signer)
+      const tx = await contract.withdraw()
+      await tx.wait(1)
+      alert("Funds withdrawn successfully!")
+      getBalance()
+    }
+
+    async function getBalance() {
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const balance = await provider.getBalance(contractAddress)
+      contractBalance.textContent = parseFloat(ethers.formatEther(balance)).toFixed(4) + " ETH"
+    }
+  </script>
+</body>
 </html>
